@@ -18,16 +18,9 @@ namespace xadrez_console
                     try
                     {
                         Console.Clear();
-                        Tela.imprimirTabuleiro(partida.tab);
-                        Console.ForegroundColor = ConsoleColor.DarkCyan;
-                        Console.WriteLine("\n==================");
-                        Console.ResetColor();
-                        Console.WriteLine("Turno: " + partida.turno);
-                        Console.Write("Aguardando jogada: " + partida.jogadorAtual);
+                        Tela.imprimirPartida(partida);
 
-                        Console.ForegroundColor = ConsoleColor.DarkCyan;
-                        Console.WriteLine("\n==================");
-                        Console.ResetColor();
+                        
                         Console.Write("\nOrigem: ");
                         Posicao origem = Tela.lerPosicaoXadrez().toPosicao();
                         partida.validarPosicaoDeOrigem(origem);
@@ -38,9 +31,9 @@ namespace xadrez_console
                         Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
 
                         Console.ForegroundColor = ConsoleColor.DarkCyan;
-                        Console.WriteLine("\n==================");
+                        Console.WriteLine("\n=============================");
                         Console.ResetColor();
-                        Console.Write("Destino: ");
+                        Console.Write("\nDestino: ");
                         Posicao destino = Tela.lerPosicaoXadrez().toPosicao();
                         partida.validarPosicaoDeDestino(origem, destino);
 
