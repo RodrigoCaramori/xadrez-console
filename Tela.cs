@@ -12,7 +12,13 @@ namespace xadrez_console
             imprimirTabuleiro(partida.tab);            
             imprimirPecasCapturadas(partida);
             Console.WriteLine("Turno: " + partida.turno);
-            Console.Write("Aguardando jogada: " + partida.jogadorAtual);
+            Console.Write("Aguardando jogada: " + partida.jogadorAtual);            
+            if (partida.xeque)
+            {
+                //Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write(" \u001b[1m\u001b[31;1m\x1b[5m\x1b[7m XEQUE! \x1b[0m");
+                //Console.ResetColor();
+            }
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("\n=============================");
             Console.ResetColor();
@@ -24,7 +30,7 @@ namespace xadrez_console
             Console.ResetColor();
             Console.WriteLine("Peças capturadas: ");
             Console.Write("Brancas: ");
-            imprimirConjunto(partida.pecasCapturadas(Cor.Branco));
+            imprimirConjunto(partida.pecasCapturadas(Cor.Branca));
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Pretas: ");
@@ -123,7 +129,7 @@ namespace xadrez_console
             }
             else
             {
-                if (peca.cor == Cor.Branco)
+                if (peca.cor == Cor.Branca)
                 {
                     Console.Write(peca);
                 }
