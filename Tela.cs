@@ -10,7 +10,7 @@ namespace xadrez_console
     {
         public static void imprimirPartida(PartidaDeXadrez partida)
         {
-            imprimirTabuleiro(partida.tab);            
+            imprimirTabuleiro(partida.tab);
             imprimirPecasCapturadas(partida);
             Console.WriteLine("Turno: " + partida.turno);
 
@@ -60,30 +60,50 @@ namespace xadrez_console
             }
             Console.Write("]");
         }
-        
+
         public static void imprimirTabuleiro(Tabuleiro tab)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("   A B C D E F G H");
-            Console.WriteLine("  -----------------");
+            Console.WriteLine("\u001b[48;5;17m    A B C D E F G H     ");
+            Console.WriteLine("   ------------------   ");
             Console.ResetColor();
             for (int i = 0; i < tab.linhas; i++)
             {
+                int cont = 1;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(8 - i + "| ");
+                Console.Write($"\u001b[48;5;17m {8 - i}| ");
                 Console.ResetColor();
                 for (int j = 0; j < tab.colunas; j++)
                 {
+
+                    if (i % 2 == 0)
+                    {
+
+                        if (j % 2 == 1 && cont % 2 == 0)
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        }
+                    }
+                    else
+                    {
+                        if (j % 2 == 0 && cont % 2 == 1)
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        }
+                    }
                     imprimirPeca(tab.peca(i, j));
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    cont++;
                 }
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"|{8 - i}");
+                Console.Write($"\u001b[48;5;17m |");
+                Console.WriteLine($"{8 - i} ");
                 Console.ResetColor();
 
             }
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("  -----------------");
-            Console.WriteLine("   A B C D E F G H");
+            Console.WriteLine("\u001b[48;5;17m   ------------------   ");
+            Console.WriteLine("    A B C D E F G H     ");
             Console.ResetColor();
         }
 
@@ -92,40 +112,81 @@ namespace xadrez_console
             ConsoleColor fundoOriginal = Console.BackgroundColor;
             ConsoleColor fundoAlterado = ConsoleColor.DarkGray;
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("   A B C D E F G H");
-            Console.WriteLine("  -----------------");
+            Console.WriteLine("\u001b[48;5;17m    A B C D E F G H     ");
+            Console.WriteLine(" \u001b[48;5;17m  ------------------   ");
             Console.ResetColor();
 
             for (int i = 0; i < tab.linhas; i++)
             {
+                int cont = 1;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(8 - i + "| ");
+                Console.Write($"\u001b[48;5;17m {8 - i}| ");
                 Console.ResetColor();
                 for (int j = 0; j < tab.colunas; j++)
                 {
-                    if (posicoesPossiveis[i, j])
+
+                    if (i % 2 == 0)
                     {
-                        Console.BackgroundColor = fundoAlterado;
+
+                        if (j % 2 == 1 && cont % 2 == 0)
+                        {
+
+                            if (posicoesPossiveis[i, j])
+                            {
+                                Console.BackgroundColor = fundoAlterado;
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            }
+                        }
+                        else
+                        {
+                            if (posicoesPossiveis[i, j])
+                            {
+                                Console.BackgroundColor = fundoAlterado;
+                            }
+                        }
                     }
-                    else
+                    else //ver aqui
                     {
-                        Console.BackgroundColor = fundoOriginal;
+                        if (j % 2 == 0 && cont % 2 == 1)
+                        {
+                            if (posicoesPossiveis[i, j])
+                            {
+                                Console.BackgroundColor = fundoAlterado;
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            }
+                        }
+                        else
+                        {
+                            if (posicoesPossiveis[i, j])
+                            {
+                                Console.BackgroundColor = fundoAlterado;
+                            }
+                        }
                     }
                     imprimirPeca(tab.peca(i, j));
+                    cont++;
                     Console.BackgroundColor = fundoOriginal;
                 }
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"|{8 - i}");
+                Console.Write($"\u001b[48;5;17m |");
+                Console.WriteLine($"{8 - i} ");
                 Console.ResetColor();
             }
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("  -----------------");
-            Console.WriteLine("   A B C D E F G H");
+            Console.WriteLine("\u001b[48;5;17m   ------------------   ");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine("\u001b[48;5;17m    A B C D E F G H     ");
             Console.ResetColor();
             Console.BackgroundColor = fundoOriginal;
         }
         public static PosicaoXadrez lerPosicaoXadrez()
-        {                                  
+        {
             string s = Console.ReadLine().ToLower();
             if (s == null || s == "")
             {
@@ -139,7 +200,7 @@ namespace xadrez_console
         {
             if (peca == null)
             {
-                Console.Write("- ");
+                Console.Write("  ");
             }
             else
             {
