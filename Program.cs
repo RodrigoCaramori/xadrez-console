@@ -19,7 +19,7 @@ namespace xadrez_console
                     {
                         Console.Clear();
                         Tela.imprimirPartida(partida);
-                                                
+
                         Console.Write("\nOrigem: ");
                         Posicao origem = Tela.lerPosicaoXadrez().toPosicao();
                         partida.validarPosicaoDeOrigem(origem);
@@ -34,12 +34,38 @@ namespace xadrez_console
                         partida.validarPosicaoDeDestino(origem, destino);
 
                         partida.realizaJogada(origem, destino);
+
+
                     }
                     catch (TabuleiroException e)
                     {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         Console.Write(e.Message);
+                        Console.ResetColor();
                         Console.ReadLine();
                     }
+                    catch (FormatException e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write(e.Message);
+                        Console.ResetColor();
+                        Console.ReadLine();
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write(e.Message);
+                        Console.ResetColor();
+                        Console.ReadLine();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write(e.Message);
+                        Console.ResetColor();
+                        Console.ReadLine();
+                    }
+
                 }
                 Console.Clear();
                 Tela.imprimirPartida(partida);
@@ -47,8 +73,11 @@ namespace xadrez_console
             }
             catch (TabuleiroException e)
             {
-                Console.WriteLine(e.Message);
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write(e.Message);
+                Console.ResetColor();
             }
+
         }
     }
 }

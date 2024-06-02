@@ -125,8 +125,12 @@ namespace xadrez_console
             Console.BackgroundColor = fundoOriginal;
         }
         public static PosicaoXadrez lerPosicaoXadrez()
-        {
+        {                                  
             string s = Console.ReadLine().ToLower();
+            if (s == null || s == "")
+            {
+                throw new TabuleiroException("Por favor, escolha uma posição para realizar a jogada!");
+            }
             char coluna = s[0];
             int linha = int.Parse(s[1] + "");
             return new PosicaoXadrez(coluna, linha);

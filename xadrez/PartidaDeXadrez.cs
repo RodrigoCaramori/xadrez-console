@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using tabuleiro;
+using xadrez_console;
 
 namespace xadrez
 {
@@ -86,6 +87,10 @@ namespace xadrez
         public void desfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
         {
             Peca p = tab.retirarPeca(destino);
+            if (p == null)
+            {
+                p = tab.retirarPeca(origem);
+            }
             p.decrementarQteMovimentos();
             if (pecaCapturada != null)
             {
@@ -113,11 +118,11 @@ namespace xadrez
                 T.incrementarQteMovimentos();
                 tab.colocarPeca(T, origemT);
             }
-            
+
             // #jogada especial en passant
             if (p is Peao)
             {
-                if(origem.coluna != destino.coluna && pecaCapturada == vulneravelEnPassant)
+                if (origem.coluna != destino.coluna && pecaCapturada == vulneravelEnPassant)
                 {
                     Peca peao = tab.retirarPeca(destino);
                     Posicao posP;
@@ -145,6 +150,68 @@ namespace xadrez
                 throw new TabuleiroException("Você não pode se colocar em xeque!");
                 Console.ResetColor();
             }
+
+            Peca p = tab.peca(destino);
+
+            //jogada especial promoção
+            if (p is Peao)
+            {
+                if ((p.cor == Cor.Branca && destino.linha == 0) || (p.cor == Cor.Preta && destino.linha == 7))
+                {
+
+                    p = tab.retirarPeca(destino);
+                    pecas.Remove(p);
+                    PartidaDeXadrez partida = new PartidaDeXadrez();
+                    bool[,] posicoesPossiveis = partida.tab.peca(origem).movimentosPossiveis();
+                    partida.validarPosicaoDeDestino(origem, destino);
+
+                repeat:
+                    Console.Clear();
+                    Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
+                    Tela.imprimirPecasCapturadas(partida);
+                    Console.Write($"\n\u001b[38;5;48m\u001b[5m\u001b[7mPeça {p.cor} promovida!\u001b[0m Escolha para qual peça seu peão será promovido (Torre, Cavalo, Bispo ou Dama): ");
+                    string escolha = Console.ReadLine()+"";
+                    if (escolha != null && escolha != "")
+                    {
+                        escolha = char.ToUpper(escolha[0]) + escolha.Substring(1);
+                    }                    
+                    if (escolha != "Torre" && escolha != "Cavalo" && escolha != "Bispo" && escolha != "Dama" || escolha == null && escolha == "")
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write("\nEscolha uma das peças possíveis: torre, cavalo, bispo ou dama!");
+                        Console.ReadLine();
+                        Console.ResetColor();
+
+                        goto repeat;
+                    }
+                    if (escolha == "Torre")
+                    {
+                        Peca torre = new Torre(tab, p.cor);
+                        tab.colocarPeca(torre, destino);
+                        pecas.Add(torre);
+                    }
+                    else if (escolha == "Cavalo")
+                    {
+                        Peca cavalo = new Cavalo(tab, p.cor);
+                        tab.colocarPeca(cavalo, destino);
+                        pecas.Add(cavalo);
+                    }
+                    else if (escolha == "Bispo")
+                    {
+                        Peca bispo = new Bispo(tab, p.cor);
+                        tab.colocarPeca(bispo, destino);
+                        pecas.Add(bispo);
+                    }
+                    else
+                    {
+                        Peca dama = new Dama(tab, p.cor);
+                        tab.colocarPeca(dama, destino);
+                        pecas.Add(dama);
+                    }
+
+                }
+            }
+
             if (estaEmXeque(adversaria(jogadorAtual)))
             {
                 xeque = true;
@@ -164,10 +231,8 @@ namespace xadrez
                 mudaJogador();
             }
 
-            Peca p = tab.peca(destino);
-
             //#jogada especial en passant
-            if (p is Peao && destino.linha == origem.linha - 2 || destino.linha == origem.linha +2)
+            if (p is Peao && destino.linha == origem.linha - 2 || destino.linha == origem.linha + 2)
             {
                 vulneravelEnPassant = p;
 
@@ -182,30 +247,22 @@ namespace xadrez
         {
             if (tab.peca(pos) == null)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
                 throw new TabuleiroException("Não existe peça na posição de origem escolhida!");
-                Console.ResetColor();
             }
             if (jogadorAtual != tab.peca(pos).cor)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
                 throw new TabuleiroException("A peça de origem escolhida, não é sua!");
-                Console.ResetColor();
             }
             if (!tab.peca(pos).existeMovimentosPossiveis())
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
                 throw new TabuleiroException("Não há movimentos possíves para a peça de origem escolhida!");
-                Console.ResetColor();
             }
         }
         public void validarPosicaoDeDestino(Posicao origem, Posicao destino)
         {
             if (!tab.peca(origem).movimentoPossivel(destino))
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                throw new TabuleiroException("Posição de destino inválida!");
-                Console.ResetColor();
+            {                
+                throw new TabuleiroException("Posição de destino inválida!");                
             }
 
         }
@@ -297,9 +354,9 @@ namespace xadrez
             foreach (Peca x in pecasEmJogo(cor))
             {
                 bool[,] mat = x.movimentosPossiveis();
-                for (int i = 0; i<tab.linhas; i++)
+                for (int i = 0; i < tab.linhas; i++)
                 {
-                    for (int j = 0; j<tab.colunas; j++)
+                    for (int j = 0; j < tab.colunas; j++)
                     {
                         if (mat[i, j])
                         {
